@@ -1,4 +1,3 @@
-
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -17,20 +16,17 @@ class Solution{
   static int minLen = Integer.MAX_VALUE;
 
   public static void main(String[] args) throws Exception{
+    // System.setIn(new FileInputStream("input_1767.txt"));
     BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
     StringTokenizer st = new StringTokenizer(bf.readLine());
 
     int T = Integer.parseInt(st.nextToken());
 
     for (int tc = 1; tc <= T; tc++) {
-      cores = new ArrayList<>();
-
       st = new StringTokenizer(bf.readLine());
       N = Integer.parseInt(st.nextToken());
-      maps = new int[N][N];
-      visited = new boolean[N][N];
-      maxCnt = 0;
-      minLen = Integer.MAX_VALUE;
+
+      init();
 
       for (int i = 0; i < N; i++) {
         st = new StringTokenizer(bf.readLine());
@@ -110,4 +106,27 @@ class Solution{
     }
     return cnt;
   }
+
+  static void init(){
+    maps = new int[N][N];
+    visited = new boolean[N][N];
+    maxCnt = 0;
+    minLen = Integer.MAX_VALUE;
+    cores = new ArrayList<>();
+  }
 }
+
+// 전선은 직선으로만 연결할 수 있음
+// 상하좌우를(사방향으로) 쭉 이동해봄
+// 1로 막히거나, 방문되어있는 지점이라면 이동할 수 없음
+// 한 곳으로 가보고 끝 지점(0이나 N-1)까지 갈 수 있다면? 연결된 것 -> while로 쭉쭉쭉 일단 이동? 
+// 이걸 어케 한담?
+// 연결될 수 있다면, 이제 다른 core 살펴보기
+// 이동할 때는 다 방문처리하기
+// 돌아오면 방문처리한 거 다시 false로 돌리기
+
+// core의 위치들은 값을 받을 때 따로 저장해두기
+// 해당 core들의 개수만큼 for문 돌면서 위의 일 수행하기
+// 전선 길이는 어디다가 넣어두지?
+// core 개수는 어디다가 넣어두지?
+// 파라미터로 같이 넣어줄까? -> 그러면 파라미터로 다음 이동좌표, 전선 길이, core 개수
