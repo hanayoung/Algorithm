@@ -2,7 +2,6 @@ import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
 import java.util.StringTokenizer;
 
 class Solution {
@@ -28,7 +27,7 @@ class Solution {
             for (int i = 0; i < N; i++) {
                 st = new StringTokenizer(bf.readLine());
                 for (int j = 0; j < N; j++) {
-                    maps[i][j] = Integer.parseInt(st.nextToken());
+                    maps[i][j] = Integer.parseInt(st.nextToken())-1;
                 }
             }
 
@@ -36,11 +35,11 @@ class Solution {
 
             for (int i = 0; i < N-2; i++) {
                 for (int j = 1; j < N-1; j++) {
-                    HashSet<Integer> hashSet = new HashSet<>();
+                    boolean[] ate = new boolean[100];
                     start = new Point(i, j);
                     boolean[][][][] visited = new boolean[N][N][4][5];
                     visited[i][j][0][0] = true;
-       
+                    int check = 0; // 먹은 디저트 종류 수
                     for (int k = 0; k < 4; k++) {
                         int nx = i + dx[k];
                         int ny = j + dy[k];
@@ -48,10 +47,11 @@ class Solution {
                         if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
 
                         if(maps[nx][ny] != maps[i][j]) {
-                            hashSet.add(maps[nx][ny]); // 넣고
+                            ate[maps[nx][ny]] = true; // 넣고
                             visited[nx][ny][k][0] = true;
-                            dfs(nx, ny, k, 0, hashSet, visited);
-                            hashSet.remove(maps[nx][ny]); // 빼고
+                            check = 1;
+                            dfs(nx, ny, k, 0, ate, visited, check);
+                            ate[maps[nx][ny]] = false; // 빼고
                             visited[nx][ny][k][0] = false;
                         }
                     }
@@ -62,9 +62,9 @@ class Solution {
         }
     }
 
-    static void dfs(int x, int y, int dir, int cnt, HashSet<Integer> hashSet, boolean [][][][] visited) {
+    static void dfs(int x, int y, int dir, int cnt, boolean[] ate, boolean [][][][] visited, int check) {
         if (x == start.x && y == start.y) {
-            answer = Math.max(answer,hashSet.size());
+            answer = Math.max(answer,check);
             return;
         }
 
@@ -74,12 +74,14 @@ class Solution {
             int ny = y + dy[dir];
 
             if(nx >= 0 && nx < N && ny >= 0 && ny < N) {
-                if(hashSet.contains(maps[nx][ny]) == false && visited[nx][ny][dir][cnt] == false) { // 이미 먹은 디저트가 아니어야 함
-                    hashSet.add(maps[nx][ny]);
+                if(ate[maps[nx][ny]] == false && visited[nx][ny][dir][cnt] == false) { // 이미 먹은 디저트가 아니어야 함
+                    ate[maps[nx][ny]] = true;
                     visited[nx][ny][dir][cnt] = true;
-                    dfs(nx, ny, dir, cnt, hashSet,visited);
-                    hashSet.remove(maps[nx][ny]); // 여기로 올 일이 있을까? 싶긴한데 일단 제거
+                    check += 1;
+                    dfs(nx, ny, dir, cnt, ate,visited, check);
+                    ate[maps[nx][ny]] = false; // 여기로 올 일이 있을까? 싶긴한데 일단 제거
                     visited[nx][ny][dir][cnt] = false;
+                    check -= 1;
                 }
             }
         } else if(cnt < 3){
@@ -90,13 +92,15 @@ class Solution {
     
                     if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
     
-                    if(hashSet.contains(maps[nx][ny]) == false) {  // 이미 먹은 디저트가 아니어야 함
-                        hashSet.add(maps[nx][ny]); // 넣고
+                    if(ate[maps[nx][ny]] == false) {  // 이미 먹은 디저트가 아니어야 함
+                        ate[maps[nx][ny]] = true; // 넣고
                         visited[nx][ny][dir][cnt] = true;
-                        if(k == dir) dfs(nx, ny, k, cnt, hashSet, visited);
-                        else dfs(nx, ny, k, cnt+1, hashSet, visited);
-                        hashSet.remove(maps[nx][ny]); // 빼고
+                        check += 1;
+                        if(k == dir) dfs(nx, ny, k, cnt, ate, visited, check);
+                        else dfs(nx, ny, k, cnt+1, ate, visited, check);
+                        ate[maps[nx][ny]] = false;  // 빼고
                         visited[nx][ny][dir][cnt] = false;
+                        check -= 1;
                     }
                 }
             }
