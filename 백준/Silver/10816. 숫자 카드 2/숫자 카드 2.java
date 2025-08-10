@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -28,11 +27,8 @@ class Main {
         st = new StringTokenizer(bf.readLine());
         for (int i = 0; i < M; i++) {
             int target = Integer.parseInt(st.nextToken());
-            if (hashMap.get(target) == null) {
-                sb.append(0).append(" "); 
-            }else {
-                sb.append(hashMap.get(target)).append(" ");
-            }
+            Integer value = hashMap.get(target);
+            sb.append(value == null ? 0 : value).append(" ");
         }
         System.out.println(sb);
     }
