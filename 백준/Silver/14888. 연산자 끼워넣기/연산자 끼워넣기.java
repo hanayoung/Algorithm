@@ -3,79 +3,77 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-class Main{
-    static int N;
-    static int[] ops;
-    static int[] nums;
-    static Character[] sel;
-    static int min = Integer.MAX_VALUE;
-    static int max = Integer.MIN_VALUE;
+class Main {
 
-    public static void main(String[] args) throws Exception{
+    static int[] op;
+    static int[] arr;
+    static int[] sel;
+    static int N;
+    static int min;
+    static int max;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(bf.readLine());
 
-        N = Integer.parseInt(st.nextToken()); // 수의 개수
-        
+        N = Integer.parseInt(st.nextToken());
+        // 1-2/3+4+5*6
+        // 10개를 조합으로 ?
+        // 
+        op = new int[4]; // 덧셈, 뺄셈, 곱셈, 나눗셈
+        arr = new int[N]; // 연산할 숫자
+
+        sel = new int[N - 1]; // 연산자 순서
         st = new StringTokenizer(bf.readLine());
-        nums = new int[N];
-        ops = new int[4];
-        
+
         for (int i = 0; i < N; i++) {
-            nums[i] = Integer.parseInt(st.nextToken());
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
         st = new StringTokenizer(bf.readLine());
+
         for (int i = 0; i < 4; i++) {
-            ops[i] = Integer.parseInt(st.nextToken());
+            op[i] = Integer.parseInt(st.nextToken());
         }
+        min = Integer.MAX_VALUE;
+        max = Integer.MIN_VALUE;
 
-        sel = new Character[N-1];
+        comb(0);
 
-        perm(0);
-
-        System.out.println(max+"\n"+min);
+        System.out.println(max);
+        System.out.println(min);
     }
 
-    static void perm(int r){
-        if(r == N-1) {
-            int sum = nums[0];
-            for (int i = 0; i < sel.length; i++) {
+    static void comb(int n) {
+        // op에서 하나씩 줄이면서 sel에 넣기
+        // n이 지금까지 뽑힌 개수, 
+        if (n == N - 1) {
+            // 계산하기
+            int sum = arr[0];
+            for(int i = 0; i < N-1; i++) {
                 switch(sel[i]) {
-                    case '+' :
-                    sum += nums[i+1];
+                    case 0: sum += arr[i+1];
                     break;
-                    case '-':
-                    sum -= nums[i+1];
+                    case 1: sum -= arr[i+1];
                     break;
-                    case '*':
-                    sum *= nums[i+1];
+                    case 2: sum *= arr[i+1];
                     break;
-                    case '/':
-                    sum /= nums[i+1];
+                    case 3: sum /= arr[i+1];
                     break;
                 }
             }
-            if(sum < min) min = sum;
-            if(sum > max) max = sum;
+            min = Math.min(min, sum);
+            max = Math.max(max, sum);
             return;
         }
         for (int i = 0; i < 4; i++) {
-            if(ops[i] > 0) {
-                switch(i) {
-                    case 0 : sel[r] = '+';
-                    break;
-                    case 1 : sel[r] = '-';
-                    break;
-                    case 2 : sel[r] = '*';
-                    break;
-                    case 3 : sel[r] = '/';
-                    break;
-                }
-                ops[i] -= 1;
-                perm(r+1);
-                ops[i] += 1;
+            if (op[i] > 0) {
+                sel[n] = i;
+                op[i] -= 1;
+                comb(n + 1);
+                op[i] += 1;
             }
         }
+
     }
 }
