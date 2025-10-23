@@ -16,8 +16,8 @@ class Solution {
             } else playerMap.put(player, playerMap.get(player) - 1);
         }
 
-        for(Map.Entry<String, Integer> entry: playerMap.entrySet()) {
-            answer = entry.getKey();
+        for(String name: playerMap.keySet()) {
+            answer = name;
         }
         return answer;
     }
