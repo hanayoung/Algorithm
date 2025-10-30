@@ -4,19 +4,21 @@ import java.util.ArrayList;
 class Solution {
     public int[] solution(int[] answers) {
         List<Integer> answer = new ArrayList<>();
-        int[] cnt = new int[3];
-        int[] player1 = {1,2,3,4,5};
-        int[] player2 = {2,1,2,3,2,4,2,5};
-        int[] player3 = {3,3,1,1,2,2,4,4,5,5};
+        int PLAYER_CNT = 3;
+        int[] cnt = new int[PLAYER_CNT];
+        int[][] PATTERNS = {
+            {1,2,3,4,5},
+            {2,1,2,3,2,4,2,5},
+            {3,3,1,1,2,2,4,4,5,5}
+        };
         
         for(int i = 0; i < answers.length; i++) {
-            if(answers[i] == player1[i%player1.length]) cnt[0]++;
-            if(answers[i] == player2[i%player2.length]) cnt[1]++;
-            if(answers[i] == player3[i%player3.length]) cnt[2]++;
+            for(int j = 0; j < PLAYER_CNT; j++) {
+                if(answers[i] == PATTERNS[j][i%PATTERNS[j].length]) cnt[j]++;
+            }
         }
         int score = 0;
-
-        for(int i = 0; i < cnt.length; i++) {
+        for(int i = 0; i < PLAYER_CNT; i++) {
            if(score < cnt[i]) {
                score = cnt[i];
                answer.clear();
